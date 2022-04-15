@@ -1,0 +1,37 @@
+AWSTemplateFormatVersion: 2010-09-09
+Resources:
+  OrdersTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: DynamoDBTable1928046
+      AttributeDefinitions:
+        - AttributeName: "Image"
+          AttributeType: "S"
+        - AttributeName: "Rating"
+          AttributeType: "S"
+      KeySchema:
+        - AttributeName: "Image"
+          KeyType: "HASH"
+        - AttributeName: "Rating"
+          KeyType: "RANGE"
+      TimeToLiveSpecification:
+        AttributeName: "ExpirationTime"
+        Enabled: true
+      ProvisionedThroughput:
+        ReadCapacityUnits: "10"
+        WriteCapacityUnits: "5" 
+
+    # SQS Policy
+    DependsOn:
+      - SQSQueuePolicy
+      
+  SQSQueuePolicy:
+    Type: "AWS::SQS::Queue"
+    Properties:
+      QueueName: SQSQueue1928046
+      DelaySeconds: 100
+      KmsDataKeyReusePeriodSeconds: 86400
+      MaximumMessageSize: 262144
+      MessageRetentionPeriod: 345600
+      ReceiveMessageWaitTimeSeconds: 0
+      VisibilityTimeout: 30 
